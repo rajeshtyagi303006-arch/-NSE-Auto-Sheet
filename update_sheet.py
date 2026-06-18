@@ -189,3 +189,13 @@ if data_to_insert:
         worksheet.update('K2', [[status_msg]])
 
         print(f"SUCCESS: Turnover Sheet Updated successfully for {fetched_date_str}!")
+
+    except Exception as e:
+
+        print(f"Google Sheet Error: {str(e)}")वेब Apps और ऑनलाइन टूल
+
+else:
+
+
+    print("FAILED: पिछले 7 दिनों में से किसी भी दिन की फाइल नहीं मिली।")
+
