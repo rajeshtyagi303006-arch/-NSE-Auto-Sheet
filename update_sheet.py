@@ -81,3 +81,43 @@ if data_to_insert:
     status_msg = f"Data Date: {fetched_date_str} | Last Update: {ist_now} (IST)"
     worksheet.update('K2', [[status_msg]])
     print("SUCCESS: Sheet Updated!")
+ध्यान दें: कोड में spreadsheet_id की जगह अपनी शीट के URL से ID निकाल कर ज़रूर डालें। फिर Commit changes पर क्लिक करें।पेनी स्टॉक विश्लेषण
+
+स्टेप 5: टाइमर (Cron) सेट करना
+हम इस कोड को रोज़ रात 8:15 बजे चलाएंगे ताकि GitHub के सर्वर पर ट्रैफिक न मिले।
+
+अपने GitHub में Actions टैब पर क्लिक करें।
+
+"set up a workflow yourself" पर क्लिक करें।
+
+नीचे दिया गया कोड पेस्ट करें:
+
+YAML
+
+name: Update NSE Stocks to Google Sheet
+
+on:
+  schedule:
+    # यह समय 14:45 UTC है, जिसका मतलब भारत में रात 8:15 PM है
+    - cron: '45 14 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  update-sheet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Libraries
+        run: pip install gspread oauth2client pandas requests
+
+      - name: Run Python Script
+        env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+        run: python update_sheet.py
